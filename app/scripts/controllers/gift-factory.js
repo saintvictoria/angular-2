@@ -20,11 +20,18 @@
         });
       }
 
+      function editGift(gift) {
+        $http.post(url, gift).success(function(){
+          $rootScope.$broadcast('gift:editted');
+        });
+      }
+
       return {
 
         getGifts: getGifts,
         getGift: getGift,
-        addGift: addGift
+        addGift: addGift,
+        editGift: editGift
       };
 
   }]);
