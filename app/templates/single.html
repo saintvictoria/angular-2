@@ -1,13 +1,13 @@
-<form ng-submit="addGift(gift)">
+<div>
 
   <input type="text" ng-model="gift.name" placeholder="name"/><br>
   <input type="text" ng-model="gift.budget" placeholder="budget"/><br>
   <input type="text" ng-model="gift.item" placeholder="item"/><br>
 
 
-  <button>Add</button>
-  <button>Delete</button>
+  <button ng-click="editGift(gift)">Save</button>
+  <button ng-click="deleteGift(gift)">Delete</button>
 
 
 
-</form>
+</div>

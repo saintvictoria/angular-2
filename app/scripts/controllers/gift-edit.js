@@ -3,18 +3,25 @@
 
   angular.module('HolidayList')
   .controller('EditController',
-  ['$scope', '$routeParams', '$http', 'appUrl', function ($scope, $routeParams, $http, appUrl) {
+          ['$scope','$routeParams','$location','giftsFactory',
+  function ($scope,  $routeParams,  $location,  giftsFactory) {
 
-    console.log(appUrl);
-
-    $http.get(appUrl + $routeParams.pid).success( function (data) {
-      console.log(data);
+    giftsFactory.getGift($routeParams.id).success( function (data) {
       $scope.gift = data;
     });
 
     $scope.editGift = function(gift) {
-      giftsFactory.editGift(gift);
-      $location.path('/')
+
+      giftsFactory.editGift(gift).success(function(){
+        $location.path('/');
+      });
+    }
+
+    $scope.deleteGift = function(gift) {
+      giftsFactory.editGift(gift).success(function(){
+        $location.path('/');
+      });
+
     }
 
   }]);

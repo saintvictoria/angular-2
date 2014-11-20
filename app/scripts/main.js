@@ -3,7 +3,9 @@
 (function (){
    var app = angular.module('HolidayList', ['ngRoute']);//setter
 
-   app.config( function ($routeProvider){
+   app.config( ['$routeProvider',
+       function ($routeProvider){
+
 
      $routeProvider.when('/', {
        templateUrl: 'templates/home.html',
@@ -20,24 +22,18 @@
        controller:'GiftsController'
      });
 
-     $routeProvider.when('/edit', {
+     $routeProvider.when('/edit/:id', {
        templateUrl: 'templates/single.html',
        controller: 'EditController'
-     })
+     });
+     /*
+     $routeProvider.when('/search/:query',{
+       templateUrl: 'searchterm.html',
+       controller: 'SearchController'
+     });
+     */
+   }]);
 
-   });
-
-
-
-  app.directive('clickTurkey', function(){
-    return {
-      link: function ($scope, element, attrs){
-        element.bind('click',function (){
-          console.log('Turkey');
-        });
-      }
-    }
-  });
 
 }());
 //angular.module('something', []); //getter
