@@ -10,9 +10,12 @@
 
           });
      $scope.addGift = function(gift) {
-       giftsFactory.addGift(gift).success(function(){
+       giftsFactory.addGift(gift);
+       $rootScope.$on('gift:added', function(){
          $location.path('/');
        });
+
+
 
      }
 

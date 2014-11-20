@@ -17,20 +17,20 @@
       }
 
       function addGift(gift) {
-        return $http.post(url, gift).success(function(){
+        return $http.post(url, gift).then(function(){
           $rootScope.$broadcast('gift:added');
         });
       }
 
       function editGift(gift) {
-        return $http.post(url, gift).success(function(){
+        return $http.put(url + gift._id, gift).then(function(){
           $rootScope.$broadcast('gift:editted');
         });
       }
 
       function deleteGift(gift) {
-        return $http.delete(url, gift);
-      }
+        return $http.delete(url + gift._id, gift);
+      };
 
       return {
 
