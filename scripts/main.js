@@ -3,7 +3,9 @@
 (function (){
    var app = angular.module('HolidayList', ['ngRoute']);//setter
 
-   app.config( function ($routeProvider){
+   app.config( ['$routeProvider',
+       function ($routeProvider){
+
 
      $routeProvider.when('/', {
        templateUrl: 'templates/home.html',
@@ -20,24 +22,18 @@
        controller:'GiftsController'
      });
 
-     $routeProvider.when('/edit', {
-       templateUrl: 'templates/add.html',
-       controller: 'GiftsController'
-     })
+     $routeProvider.when('/edit/:id', {
+       templateUrl: 'templates/single.html',
+       controller: 'EditController'
+     });
+     /*
+     $routeProvider.when('/search/:query',{
+       templateUrl: 'searchterm.html',
+       controller: 'SearchController'
+     });
+     */
+   }]);
 
-   });
-
-
-
-  app.directive('clickTurkey', function(){
-    return {
-      link: function ($scope, element, attrs){
-        element.bind('click',function (){
-          console.log('Turkey');
-        });
-      }
-    }
-  });
 
 }());
 //angular.module('something', []); //getter
@@ -52,11 +48,60 @@
 // }]);
 
 
+
+(function (){
+  angular.module('HolidayList')
+  .factory('giftsFactory',
+  ['$rootScope','$http', function
+   ($rootScope,  $http) {
+
+    var url ="http://tiy-atl-fe-server.herokuapp.com/collections/vicholidaylist/";
+
+    function getGifts () {
+      return $http.get(url);
+      }
+
+      function getGift (id) {
+        return $http.get(url + id);
+      }
+
+      function addGift(gift) {
+        return $http.post(url, gift).then(function(){
+          $rootScope.$broadcast('gift:added');
+        });
+      }
+
+      function editGift(gift) {
+        return $http.put(url + gift._id, gift).then(function(){
+          $rootScope.$broadcast('gift:editted');
+        });
+      }
+
+      function deleteGift(gift) {
+        return $http.delete(url + gift._id, gift).then(function(){
+          $rootScope.$broadcast('gift:deleted');
+        });
+      };
+
+      return {
+
+        getGifts: getGifts,
+        getGift: getGift,
+        addGift: addGift,
+        editGift: editGift,
+        deleteGift: deleteGift
+      };
+
+  }]);
+
+}());
+
+
 (function (){
   angular.module('HolidayList')
   .controller('GiftsController',
-   ['giftsFactory','$scope', '$location', '$rootScope',
-    function( giftsFactory, $scope, $location, $rootScope){
+            ['giftsFactory','$scope','$location','$rootScope',
+    function( giftsFactory,  $scope,  $location,  $rootScope){
 
      giftsFactory.getGifts().success(function(data){
        $scope.gifts = data;
@@ -64,7 +109,12 @@
           });
      $scope.addGift = function(gift) {
        giftsFactory.addGift(gift);
-        $location.path('/');
+       $rootScope.$on('gift:added', function(){
+         $location.path('/');
+       });
+
+
+
      }
 
   }]);
@@ -73,33 +123,33 @@
 }());
 
 
+(function () {
 
-(function (){
   angular.module('HolidayList')
-  .factory('giftsFactory', ['$rootScope', '$http', function($rootScope, $http){
+  .controller('EditController',
+          ['$scope','$routeParams','$location','giftsFactory','$rootScope',
+  function ($scope,  $routeParams,  $location,  giftsFactory,  $rootScope) {
 
-    var url ="http://tiy-atl-fe-server.herokuapp.com/collections/vicholidaylist/";
+    giftsFactory.getGift($routeParams.id).success( function (data) {
+      $scope.gift = data;
+    });
 
-    function getGifts (){
-      return $http.get(url);
-      }
+    $scope.editGift = function(gift) {
+      giftsFactory.editGift(gift);
+      $rootScope.$on('gift:editted', function (){
+        $location.path('/');
+      });
+    }
 
-      function getGift (id){
-        return $http.get(url + id);
-      }
+    $scope.deleteGift = function(gift) {
+      giftsFactory.deleteGift(gift);
+      $rootScope.$on('gift:deleted', function(){
+        $location.path('/');
+      });
 
-      function addGift(gift) {
-        $http.post(url, gift).success(function(){
-          $rootScope.$broadcast('gift:added');
-        });
-      }
-
-      return {
-
-        getGifts: getGifts,
-        getGift: getGift,
-        addGift: addGift
       };
+
+
 
   }]);
 
