@@ -19,7 +19,10 @@
 
     $scope.deleteGift = function(gift) {
       giftsFactory.deleteGift(gift);
+      $rootScope.$on('gift:deleted', function(){
         $location.path('/');
+      });
+
       };
 
 

@@ -29,7 +29,9 @@
       }
 
       function deleteGift(gift) {
-        return $http.delete(url + gift._id, gift);
+        return $http.delete(url + gift._id, gift).then(function(){
+          $rootScope.$broadcast('gift:deleted');
+        });
       };
 
       return {
